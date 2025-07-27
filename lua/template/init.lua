@@ -53,6 +53,24 @@ renderer.register_builtins = function()
       end
       return camel_case_file_name
   end)
+  renderer.register('{{_title_file_}}', function(_)
+    local file_name = fn.expand('%:t:r')
+    local _, underscore_count = string.gsub(file_name, "_", "")
+    local _, dash_count = string.gsub(file_name, "-", "")
+    local title_case_file_name
+    if underscore_count > dash_count then
+        title_case_file_name = vim.fn.system(
+            { "caser", "snake", "title" },
+            file_name
+        )
+    else
+        title_case_file_name = vim.fn.system(
+            { "caser", "kebab", "title" },
+            file_name
+        )
+    end
+    return title_case_file_name
+end)
 end
 
 renderer.render_line = function(line)
